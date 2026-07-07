@@ -1,5 +1,3 @@
-
-
 console.log("🚀 SEO Worker Started");
 
 const { Worker } = require("bullmq");
@@ -13,7 +11,7 @@ const performanceAudit = require("../services/performance.service");
 const contentAudit = require("../services/content.service");
 const generateScore = require("../services/score.service");
 
-new Worker(
+const worker = new Worker(
   "seo-analysis",
   async (job) => {
     console.log("📦 Job received:", job.data);
@@ -34,7 +32,7 @@ new Worker(
       const seo = seoAudit(html);
 
       // ==============================
-      // 3. Run Technical Audit & Lighthouse together
+      // 3. Technical + Performance
       // ==============================
       console.log("3️⃣ Running Technical Audit...");
       console.log("4️⃣ Running Lighthouse Performance Audit...");
@@ -48,13 +46,13 @@ new Worker(
       console.log(performance);
 
       // ==============================
-      // 5. Content Audit
+      // 4. Content Audit
       // ==============================
       console.log("5️⃣ Running Content Audit...");
       const content = contentAudit(html);
 
       // ==============================
-      // 6. Generate Final Score
+      // 5. Generate Score
       // ==============================
       console.log("6️⃣ Calculating Final Score...");
 
@@ -66,30 +64,71 @@ new Worker(
       );
 
       // ==============================
-      // 7. Save Report
+      // 6. Update MongoDB
       // ==============================
-      await Report.findByIdAndUpdate(reportId, {
-        status: "completed",
-        report: {
-          seo,
-          technical,
-          performance,
-          content,
-        },
-        score,
-      });
+      console.log("Updating Report:", reportId);
 
-      console.log("✅ Report Saved Successfully");
+      const updatedReport = await Report.findByIdAndUpdate(
+        reportId,
+        {
+          status: "completed",
+          report: {
+            seo,
+            technical,
+            performance,
+            content,
+          },
+          score,
+        },
+        {
+          new: true,
+        }
+      );
+
+      console.log("Updated Report:");
+      console.log(updatedReport);
+
+      if (!updatedReport) {
+        console.error("❌ No report found with ID:", reportId);
+      } else {
+        console.log("✅ Report Saved Successfully");
+      }
     } catch (err) {
       console.error("❌ Worker Error:", err);
 
-      await Report.findByIdAndUpdate(reportId, {
-        status: "failed",
-        error: err.message,
-      });
+      try {
+        const failedReport = await Report.findByIdAndUpdate(
+          reportId,
+          {
+            status: "failed",
+            error: err.message,
+          },
+          {
+            new: true,
+          }
+        );
+
+        console.log("Failed Report:");
+        console.log(failedReport);
+      } catch (dbErr) {
+        console.error("❌ Failed to update report status:", dbErr);
+      }
     }
   },
   {
     connection,
   }
 );
+
+// Worker Events
+worker.on("completed", (job) => {
+  console.log(`🎉 Job ${job.id} completed`);
+});
+
+worker.on("failed", (job, err) => {
+  console.error(`💥 Job ${job?.id} failed:`, err);
+});
+
+worker.on("error", (err) => {
+  console.error("🚨 Worker Error Event:", err);
+});

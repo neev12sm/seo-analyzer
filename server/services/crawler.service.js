@@ -1,32 +1,42 @@
 const puppeteer = require("puppeteer");
 
 const crawlWebsite = async (url) => {
-  const browser = await puppeteer.launch({
-    executablePath: puppeteer.executablePath(),
-    headless: true,
-    args: [
-      "--no-sandbox",
-      "--disable-setuid-sandbox",
-      "--disable-dev-shm-usage",
-      "--disable-gpu",
-      "--no-first-run",
-      "--no-zygote",
-      "--single-process"
-    ]
-  });
+  let browser;
 
-  const page = await browser.newPage();
+  try {
+    console.log("Launching browser...");
 
-  await page.goto(url, {
-    waitUntil: "networkidle2",
-    timeout: 60000
-  });
+    browser = await puppeteer.launch({
+      headless: true,
+      args: [
+        "--no-sandbox",
+        "--disable-setuid-sandbox",
+        "--disable-dev-shm-usage",
+        "--disable-gpu",
+      ],
+    });
 
-  const html = await page.content();
+    console.log("Creating page...");
+    const page = await browser.newPage();
 
-  await browser.close();
+    console.log("Navigating...");
+    await page.goto(url, {
+      waitUntil: "domcontentloaded",
+      timeout: 60000,
+    });
 
-  return html;
+    console.log("Getting HTML...");
+    const html = await page.content();
+
+    return html;
+  } catch (err) {
+    console.error("Crawler Error:", err);
+    throw err;
+  } finally {
+    if (browser) {
+      await browser.close();
+    }
+  }
 };
 
 module.exports = crawlWebsite;
