@@ -2,6 +2,7 @@ const puppeteer = require("puppeteer");
 
 const crawlWebsite = async (url) => {
   const browser = await puppeteer.launch({
+    executablePath: puppeteer.executablePath(),
     headless: true,
     args: [
       "--no-sandbox",
