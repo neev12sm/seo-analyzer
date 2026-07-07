@@ -88,9 +88,9 @@ const Hero = () => {
         />
       ))}
 
-      <div className="relative max-w-7xl mx-auto px-8 min-h-screen">
+    <div className="relative max-w-7xl mx-auto px-5 sm:px-8 lg:px-8 min-h-screen">
 
-        <div className="grid lg:grid-cols-2 gap-16 items-center min-h-screen">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center min-h-screen py-20">
 
           {/* Left Side */}
 
@@ -112,7 +112,7 @@ const Hero = () => {
 
             {/* Heading */}
 
-            <h1 className="mt-10 text-6xl lg:text-7xl font-black leading-tight text-white">
+            <h1 className="mt-8 text-4xl sm:text-5xl lg:text-7xl font-black leading-tight text-white">
 
               Analyze
 
@@ -131,8 +131,7 @@ const Hero = () => {
             </h1>
 
             {/* Description */}
-
-            <p className="mt-8 text-xl text-gray-300 leading-9 max-w-xl">
+             <p className="mt-6 text-base sm:text-lg lg:text-xl text-gray-300 leading-7 sm:leading-9 max-w-xl">
 
               Discover SEO issues, technical SEO, page speed,
               content quality, security checks and AI-powered
@@ -145,60 +144,62 @@ const Hero = () => {
               onSubmit={submitHandler}
               className="mt-12 max-w-2xl"
             >
-              <div
-                className="
-                  flex
-                  items-center
-                  overflow-hidden
-                  rounded-2xl
-                  border
-                  border-white/10
-                  bg-white/10
-                  backdrop-blur-xl
-                  shadow-[0_20px_60px_rgba(0,0,0,0.35)]
-                "
-              >
-                <div className="pl-6 text-cyan-400 text-xl">
-                  <FaGlobe />
-                </div>
+           <div
+className="
+flex
+flex-col
+sm:flex-row
+overflow-hidden
+rounded-2xl
+border
+border-white/10
+bg-white/10
+backdrop-blur-xl
+shadow-[0_20px_60px_rgba(0,0,0,0.35)]
+"
+>
 
                 <input
                   type="text"
                   placeholder="https://example.com"
                   value={url}
                   onChange={(e) => setUrl(e.target.value)}
-                  className="
-                    flex-1
-                    bg-transparent
-                    px-5
-                    py-6
-                    text-lg
-                    text-white
-                    placeholder:text-gray-400
-                    outline-none
-                  "
+               className="
+flex-1
+bg-transparent
+px-5
+py-5
+text-base
+sm:text-lg
+text-white
+placeholder:text-gray-400
+outline-none
+"
                 />
 
                 <button
                   type="submit"
                   disabled={loading}
-                  className="
-                    flex
-                    items-center
-                    gap-3
-                    px-8
-                    py-6
-                    bg-gradient-to-r
-                    from-cyan-500
-                    to-blue-600
-                    hover:from-blue-600
-                    hover:to-indigo-600
-                    text-white
-                    font-semibold
-                    transition
-                    duration-300
-                    disabled:opacity-60
-                  "
+            className="
+w-full
+sm:w-auto
+flex
+justify-center
+items-center
+gap-3
+px-8
+py-5
+bg-gradient-to-r
+from-cyan-500
+to-blue-600
+hover:from-blue-600
+hover:to-indigo-600
+text-white
+font-semibold
+transition
+duration-300
+disabled:opacity-60
+"
                 >
                   <FaSearch />
 
@@ -215,7 +216,7 @@ const Hero = () => {
 
             {/* ================= Hero Stats ================= */}
 
-            <div className="mt-14">
+          <div className="mt-10 lg:mt-14">
               <HeroStats />
             </div>
 
@@ -227,9 +228,11 @@ const Hero = () => {
             initial={{ opacity: 0, x: 70 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 1 }}
-            className="flex justify-center items-center"
+            className="flex justify-center items-center mt-12 lg:mt-0"
           >
-            <Globe />
+         <div className="scale-75 sm:scale-90 lg:scale-100">
+    <Globe />
+</div>
           </motion.div>
 
         </div>
@@ -246,15 +249,16 @@ const Hero = () => {
           duration: 1.8,
         }}
         className="
-          absolute
-          bottom-8
-          left-1/2
-          -translate-x-1/2
-          flex
-          flex-col
-          items-center
-          text-gray-400
-        "
+hidden
+lg:flex
+absolute
+bottom-8
+left-1/2
+-translate-x-1/2
+flex-col
+items-center
+text-gray-400
+"
       >
         <p className="text-xs tracking-[4px] uppercase mb-3">
           Scroll Down
